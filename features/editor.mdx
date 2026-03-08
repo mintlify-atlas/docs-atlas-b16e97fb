@@ -1,0 +1,282 @@
+---
+title: "Monaco Editor Integration"
+description: "Powerful code editing with Monaco Editor"
+---
+
+Blink Code Editor integrates Monaco Editor, the same editor that powers Visual Studio Code, providing professional-grade editing capabilities with advanced IntelliSense, syntax highlighting, and TypeScript support.
+
+## Overview
+
+The editor component is built using `@monaco-editor/react` and provides:
+
+- Automatic language detection based on file extensions
+- Real-time syntax validation and error reporting
+- Multi-file editing with tab management
+- TypeScript module resolution and IntelliSense
+- Image preview for supported formats
+- Ctrl+Click navigation between files
+
+## Language Support
+
+Blink automatically detects the programming language based on file extensions and provides syntax highlighting for 50+ languages:
+
+```typescript
+import { getLanguageByFilename } from '../../utils/languageMap'
+
+// Automatic language detection
+const language = getLanguageByFilename('app.tsx') // Returns 'typescript'
+```
+
+<Tip>
+The editor supports TypeScript, JavaScript, JSX, TSX, JSON, CSS, SCSS, HTML, Markdown, and many more languages out of the box.
+</Tip>
+
+## Editor Configuration
+
+The Monaco editor is configured with optimal settings for performance and developer experience:
+
+```typescript
+<MonacoEditor
+  height="100%"
+  language={getLanguageByFilename(activeFile.name)}
+  path={activeFile.path}
+  value={activeFile.content || ''}
+  theme="vs-dark"
+  options={{
+    fontSize: settings.fontSize,
+    minimap: { enabled: settings.minimap },
+    scrollBeyondLastLine: settings.scrollBeyondLastLine,
+    automaticLayout: true,
+    fontFamily: settings.fontFamily,
+    lineHeight: settings.lineHeight,
+    padding: { top: 20 },
+    wordBasedSuggestions: 'allDocuments',
+    suggestOnTriggerCharacters: true,
+    acceptSuggestionOnEnter: 'on',
+    tabCompletion: 'on',
+    links: true,
+    renderValidationDecorations: 'on',
+  }}
+/>
+```
+
+## IntelliSense & Autocomplete
+
+The editor provides intelligent code completion powered by Monaco's TypeScript language service:
+
+<Accordion title="IntelliSense Features">
+  - **Word-based suggestions**: Suggestions from all open documents
+  - **Trigger characters**: Auto-suggest on `.`, `(`, `<`, etc.
+  - **Tab completion**: Complete suggestions with Tab key
+  - **Enter to accept**: Accept suggestions with Enter key
+  - **TypeScript support**: Full TypeScript IntelliSense and type checking
+</Accordion>
+
+### TypeScript Configuration
+
+Blink automatically configures TypeScript compiler options for optimal IntelliSense:
+
+```typescript
+import { setupCompilerOptions } from '../../utils/monacoSync'
+
+// Setup TypeScript compiler options
+beforeMount={(monaco: any) => {
+  const syncDisposables = setupCompilerOptions(monaco, tree?.path)
+  disposablesRef.current.push(syncDisposables)
+}}
+```
+
+## Workspace Synchronization
+
+Blink synchronizes your entire workspace with Monaco for accurate module resolution:
+
+```typescript
+import { syncWorkspaceWithMonaco } from '../../utils/monacoSync'
+
+// Sync workspace tree for module resolution
+useEffect(() => {
+  if (monacoRef.current && tree && tree.path !== lastSyncedTreeRef.current) {
+    syncWorkspaceWithMonaco(monacoRef.current, tree)
+    
+    // Re-setup compiler options with new root path
+    const syncDisposables = setupCompilerOptions(monacoRef.current, tree.path)
+    disposablesRef.current.push(syncDisposables)
+    
+    lastSyncedTreeRef.current = tree.path
+  }
+}, [tree, monacoRef.current])
+```
+
+<Note>
+Workspace synchronization ensures that import statements, module resolution, and IntelliSense work correctly across your entire project.
+</Note>
+
+## Real-time Validation
+
+The editor provides real-time syntax validation with immediate feedback:
+
+```typescript
+// Monitor validation markers
+const markersListener = monaco.editor.onDidChangeMarkers(() => {
+  const markers = monaco.editor.getModelMarkers({})
+  onValidationChange(markers)
+})
+
+// Initial marker reporting
+const markers = monaco.editor.getModelMarkers({})
+onValidationChange(markers)
+```
+
+Errors and warnings are displayed in:
+- The editor with red/yellow squiggly underlines
+- The bottom problems panel with file locations
+- Line numbers with error/warning indicators
+
+## Multi-tab Editing
+
+Blink supports editing multiple files simultaneously with intelligent tab management:
+
+```typescript
+// Sync all open tabs with Monaco models
+useEffect(() => {
+  if (monacoRef.current && tabs.length > 0) {
+    const monaco = monacoRef.current
+    tabs.forEach(tab => {
+      const uri = monaco.Uri.file(tab.path)
+      let model = monaco.editor.getModel(uri)
+      if (!model) {
+        monaco.editor.createModel(
+          tab.content || '', 
+          getLanguageByFilename(tab.name), 
+          uri
+        )
+      } else {
+        if (tab.content !== undefined && model.getValue() !== tab.content) {
+          model.setValue(tab.content)
+        }
+      }
+    })
+  }
+}, [tabs])
+```
+
+<Tabs>
+  <Tab title="Opening Files">
+    Click files in the Explorer to open them in new tabs. Multiple files can be open simultaneously.
+  </Tab>
+  
+  <Tab title="Switching Tabs">
+    Click on tab headers to switch between open files. The active tab is highlighted.
+  </Tab>
+  
+  <Tab title="Closing Tabs">
+    Click the × button on tab headers to close files. Unsaved changes are preserved in memory.
+  </Tab>
+</Tabs>
+
+## Cursor Position Tracking
+
+The editor tracks cursor position in real-time and displays it in the status bar:
+
+```typescript
+const cursorListener = editor.onDidChangeCursorPosition((e: any) => {
+  onCursorChange({
+    line: e.position.lineNumber,
+    column: e.position.column
+  })
+})
+```
+
+## Link Navigation
+
+Blink supports Ctrl+Click navigation for module imports and file references:
+
+```typescript
+// Register global editor opener for Ctrl+Click navigation
+const openerDisposable = monaco.editor.registerEditorOpener({
+  openCodeEditor: (_source: any, resource: any, _selection: any) => {
+    const path = resource.path
+    const name = path.split('/').pop() || ''
+    const ext = name.split('.').pop() || ''
+    const type = (ext || 'file') as any
+    
+    onOpenFile(name, type, path)
+    return true
+  }
+})
+```
+
+<Tip>
+Hold Ctrl and click on any import statement or file path to navigate directly to that file.
+</Tip>
+
+## Image Preview
+
+The editor includes built-in image preview for visual assets:
+
+```typescript
+// Image file detection
+['png', 'jpg', 'jpeg', 'gif', 'svg', 'ico'].includes(
+  activeFile.name.split('.').pop()?.toLowerCase() || ''
+) ? (
+  <ImagePreview path={activeFile.path} name={activeFile.name} />
+) : (
+  <MonacoEditor ... />
+)
+```
+
+Supported image formats:
+- PNG
+- JPG/JPEG
+- GIF
+- SVG
+- ICO
+
+## Saving Files
+
+Save your work with the standard keyboard shortcut:
+
+```typescript
+// Save current file
+// Keyboard: Ctrl + S
+```
+
+<Note>
+Blink automatically saves file content in memory as you type. Press `Ctrl + S` to write changes to disk.
+</Note>
+
+## Editor Options
+
+The editor can be customized through the Settings panel. See the [Settings documentation](/features/settings) for details on:
+
+- Font size, family, and line height
+- Tab size and word wrap
+- Line numbers and whitespace rendering
+- Cursor style and blinking animation
+- Minimap visibility
+- Bracket pair colorization
+
+## Performance Considerations
+
+Blink optimizes editor performance through:
+
+- **Lazy model creation**: Models are created on-demand for open files
+- **Automatic layout**: Editor automatically adjusts to panel resizing
+- **Efficient updates**: Only changed content triggers updates
+- **Cleanup management**: Proper disposal of listeners and resources
+
+```typescript
+// Cleanup on unmount
+useEffect(() => {
+  return () => {
+    disposablesRef.current.forEach(d => d.dispose())
+    disposablesRef.current = []
+  }
+}, [])
+```
+
+## Next Steps
+
+- Learn about [File Explorer](/features/file-explorer) operations
+- Customize your editor in [Settings](/features/settings)
+- Use the [Integrated Terminal](/features/terminal)

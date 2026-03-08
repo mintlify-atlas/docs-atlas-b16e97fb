@@ -1,0 +1,217 @@
+---
+title: 'Customization'
+description: 'Customize Blink Code Editor to match your preferences and workflow'
+icon: 'palette'
+---
+
+Blink Code Editor offers extensive customization options to tailor your editing experience. Access the Settings panel from the navbar to configure fonts, editor behavior, cursor styles, and more.
+
+## Accessing Settings
+
+To open the Settings panel:
+
+1. Press the `ALT` key to reveal the navbar menu
+2. Click on **Edit** in the menu
+3. Select **Settings**
+
+Alternatively, settings are automatically saved to `settings.json` in your application data folder.
+
+<Note>
+All settings changes are automatically saved and persisted across editor sessions.
+</Note>
+
+## Font Customization
+
+Personalize the editor's typography to your liking:
+
+### Font Size
+
+- **Monaco Property:** `editor.fontSize`
+- **Range:** 8px to 40px
+- **Default:** 14px
+- Controls the size of text in the editor
+
+### Font Family
+
+- **Monaco Property:** `editor.fontFamily`
+- **Default:** `Geist Mono, monospace`
+- Use any installed font on your system
+- Supports multiple fallback fonts (e.g., `"Fira Code", "Consolas", monospace`)
+
+### Line Height
+
+- **Monaco Property:** `editor.lineHeight`
+- **Range:** 0 to 60
+- **Default:** 24
+- Set to 0 to use automatic line height
+
+### Font Ligatures
+
+- **Monaco Property:** `editor.fontLigatures`
+- **Default:** Enabled
+- Enable or disable programming ligatures (e.g., `=>`, `!=`, `===`)
+- Requires a font with ligature support (like Fira Code or Cascadia Code)
+
+<Tip>
+For the best ligature experience, install fonts like **Fira Code**, **JetBrains Mono**, or **Cascadia Code** and update the Font Family setting.
+</Tip>
+
+## Editor Preferences
+
+Configure how the editor behaves:
+
+### Tab Size
+
+- **Monaco Property:** `editor.tabSize`
+- **Range:** 1 to 16 spaces
+- **Default:** 4
+- Controls the number of spaces inserted when you press Tab
+
+### Word Wrap
+
+- **Monaco Property:** `editor.wordWrap`
+- **Default:** Off
+- **Options:**
+  - **Off** - Lines never wrap
+  - **On** - Lines wrap at viewport width
+  - **Word Wrap Column** - Lines wrap at a specific column
+  - **Bounded** - Lines wrap at minimum of viewport and word wrap column
+
+### Line Numbers
+
+- **Monaco Property:** `editor.lineNumbers`
+- **Default:** On
+- **Options:**
+  - **On** - Show absolute line numbers
+  - **Off** - Hide line numbers
+  - **Relative** - Show relative line numbers (distance from cursor)
+  - **Interval** - Show line numbers at intervals
+
+### Render Whitespace
+
+- **Monaco Property:** `editor.renderWhitespace`
+- **Default:** None
+- **Options:**
+  - **None** - No whitespace shown
+  - **Boundary** - Show whitespace between words
+  - **Selection** - Show whitespace in selection
+  - **Trailing** - Show trailing whitespace only
+  - **All** - Show all whitespace characters
+
+### Scroll Beyond Last Line
+
+- **Monaco Property:** `editor.scrollBeyondLastLine`
+- **Default:** Disabled
+- When enabled, allows scrolling past the last line of the file
+
+### Bracket Pair Colorization
+
+- **Monaco Property:** `editor.bracketPairColorization.enabled`
+- **Default:** Enabled
+- Colors matching brackets to make code structure more visible
+
+## Cursor Customization
+
+Personalize your cursor appearance and behavior:
+
+### Cursor Style
+
+- **Monaco Property:** `editor.cursorStyle`
+- **Default:** Line
+- **Options:**
+  - **Line** - Vertical line cursor
+  - **Block** - Solid block cursor
+  - **Underline** - Underscore cursor
+  - **Line (thin)** - Thin vertical line
+  - **Block (outline)** - Block outline cursor
+  - **Underline (thin)** - Thin underscore cursor
+
+### Cursor Blinking
+
+- **Monaco Property:** `editor.cursorBlinking`
+- **Default:** Blink
+- **Options:**
+  - **Blink** - Standard blinking animation
+  - **Smooth** - Smooth fade in/out
+  - **Phase** - Phases in and out
+  - **Expand** - Expands and contracts
+  - **Solid** - No blinking (always visible)
+
+<Note>
+Cursor customization helps reduce eye strain and matches your personal preference for visual feedback.
+</Note>
+
+## UI Customization
+
+### Minimap
+
+- **Monaco Property:** `editor.minimap.enabled`
+- **Default:** Disabled
+- Shows a miniature overview of your code on the right side of the editor
+- Useful for navigating large files quickly
+
+<Tip>
+Enable the minimap when working with files over 200 lines to quickly jump to different sections.
+</Tip>
+
+## Advanced: Editing settings.json
+
+For direct configuration file access:
+
+1. Press `ALT` to show the navbar menu
+2. Click **Edit** > **Settings**
+3. Scroll to the bottom and click **Open settings.json**
+4. This opens your settings folder in the explorer where you can edit `settings.json` directly
+
+<Accordion title="Example settings.json">
+```json
+{
+  "fontSize": 14,
+  "fontFamily": "Geist Mono, monospace",
+  "lineHeight": 24,
+  "tabSize": 4,
+  "wordWrap": "off",
+  "minimap": false,
+  "lineNumbers": "on",
+  "cursorStyle": "line",
+  "cursorBlinking": "blink",
+  "fontLigatures": true,
+  "scrollBeyondLastLine": false,
+  "renderWhitespace": "none",
+  "bracketPairColorization": true
+}
+```
+</Accordion>
+
+## Theme Customization (Coming Soon)
+
+A custom theme engine is currently in development. Future releases will include:
+
+- Multiple built-in themes (dark and light variants)
+- Custom color scheme support
+- Theme import/export functionality
+- Syntax highlighting customization
+
+## Default Settings Reference
+
+Here's a complete reference of all default values:
+
+| Setting | Default Value |
+| --- | --- |
+| Font Size | 14 |
+| Font Family | Geist Mono, monospace |
+| Line Height | 24 |
+| Tab Size | 4 |
+| Word Wrap | off |
+| Minimap | false |
+| Line Numbers | on |
+| Cursor Style | line |
+| Cursor Blinking | blink |
+| Font Ligatures | true |
+| Scroll Beyond Last Line | false |
+| Render Whitespace | none |
+| Bracket Pair Colorization | true |
+
+<Note>
+All settings are stored in your system's application data directory and persist across updates.
+</Note>

@@ -1,0 +1,240 @@
+---
+title: Installation
+description: Download and install Blink Code Editor on Windows and Linux
+---
+
+## Overview
+
+Blink Code Editor is a high-performance IDE built from the ground up to ensure every millisecond of latency is eliminated. This standalone development environment (not a VS Code fork) focuses on a lightweight footprint and instantaneous feedback.
+
+## System Requirements
+
+Before installing Blink, ensure your system meets these requirements:
+
+- **Operating System**: Windows 10/11 (x64) or Linux (x64)
+- **RAM**: 4GB minimum, 8GB recommended
+- **Disk Space**: 200MB for installation
+- **Display**: 1280x720 minimum resolution
+
+<Note>
+Blink v0.0.12-dev is the latest stable release. Earlier versions are available but may have reduced stability.
+</Note>
+
+## Download Blink
+
+Blink is distributed through GitHub releases:
+
+1. Visit the [Blink Releases page](https://github.com/BlinkCodeEditor/Blink/releases)
+2. Download the appropriate installer for your platform:
+   - **Windows**: `Blink-Setup-{version}.exe`
+   - **Linux**: `Blink {version}.AppImage`
+
+<Warning>
+Always download Blink from the official GitHub repository to ensure you receive the authentic, unmodified application.
+</Warning>
+
+## Installation Instructions
+
+<Tabs>
+  <Tab title="Windows">
+    <Steps>
+      <Step title="Download the Installer">
+        Download `Blink-Setup-{version}.exe` from the releases page.
+      </Step>
+      
+      <Step title="Run the Setup">
+        Double-click the downloaded `.exe` file to launch the installer.
+        
+        The NSIS installer will open with installation options:
+        - Choose your installation directory
+        - Select whether to install for current user or all users
+        - Configure start menu shortcuts
+      </Step>
+      
+      <Step title="Choose Installation Location">
+        By default, Blink installs to `C:\Users\{YourName}\AppData\Local\Blink`
+        
+        You can change this location during installation. The installer allows you to choose a custom directory.
+      </Step>
+      
+      <Step title="Complete Installation">
+        Click "Install" and wait for the process to complete. This typically takes 30-60 seconds.
+        
+        Once finished, click "Finish" to exit the installer.
+      </Step>
+      
+      <Step title="Launch Blink">
+        Launch Blink from:
+        - Start Menu shortcut
+        - Desktop icon (if selected during installation)
+        - Installation directory: `Blink.exe`
+      </Step>
+    </Steps>
+
+    ### Windows Installation Notes
+
+    - The installer does not require administrator privileges by default (per-user installation)
+    - Blink automatically checks for updates when launched (press ALT to see update button in navbar)
+    - App data is stored in `%APPDATA%\Blink` and is preserved during updates
+
+  </Tab>
+  
+  <Tab title="Linux">
+    <Steps>
+      <Step title="Download the AppImage">
+        Download `Blink {version}.AppImage` from the releases page.
+      </Step>
+      
+      <Step title="Make Executable">
+        Open a terminal and navigate to your downloads folder, then make the AppImage executable:
+        
+        ```bash
+        chmod +x "Blink {version}.AppImage"
+        ```
+      </Step>
+      
+      <Step title="Run Blink">
+        Launch Blink by running the AppImage:
+        
+        ```bash
+        ./"Blink {version}.AppImage"
+        ```
+        
+        Or double-click the AppImage file in your file manager.
+      </Step>
+      
+      <Step title="Optional: Integration">
+        For better desktop integration, consider:
+        
+        **Move to Applications folder:**
+        ```bash
+        mv "Blink {version}.AppImage" ~/Applications/
+        ```
+        
+        **Create desktop entry:**
+        Create `~/.local/share/applications/blink.desktop`:
+        ```ini
+        [Desktop Entry]
+        Name=Blink
+        Exec=/home/yourusername/Applications/Blink {version}.AppImage
+        Icon=blink
+        Type=Application
+        Categories=Development;IDE;
+        ```
+      </Step>
+    </Steps>
+
+    ### Linux Installation Notes
+
+    - AppImage requires FUSE to run on most distributions
+    - Install FUSE if you encounter "cannot mount" errors:
+      ```bash
+      # Ubuntu/Debian
+      sudo apt install fuse libfuse2
+      
+      # Fedora
+      sudo dnf install fuse fuse-libs
+      
+      # Arch
+      sudo pacman -S fuse2
+      ```
+    - Blink stores configuration in `~/.config/Blink`
+
+  </Tab>
+</Tabs>
+
+## Version Information
+
+Blink follows a development versioning scheme:
+
+| Version | Stability | Platforms | Notes |
+| --- | --- | --- | --- |
+| v0.0.12-dev | Stable | Windows, Linux | Latest release |
+| v0.0.11-dev | Stable | Windows, Linux | Previous stable |
+| v0.0.10-dev | Stable | Windows, Linux | Previous stable |
+| v0.0.9-dev | Stable | Windows, Linux | Development channel |
+| v0.0.8-dev | Stable | Windows, Linux | Development channel |
+
+<Note>
+Versions labeled "Stable" are recommended for production use. Lower-numbered development versions may have reduced stability.
+</Note>
+
+## First Launch
+
+When you launch Blink for the first time:
+
+1. You'll see a welcome screen introducing Blink's key features
+2. Review and accept the terms of service
+3. The main editor interface will open, ready for you to start coding
+4. Blink may collect anonymous usage analytics via Aptabase to improve the product
+
+## Updating Blink
+
+Blink includes an auto-update system:
+
+- Press **ALT** to display the navbar menu
+- If an update is available, you'll see an "Update" button
+- Click to download and install the latest version
+- Your settings and preferences are preserved during updates
+
+<Warning>
+On Windows, Blink updates do not verify code signatures (verifyUpdateCodeSignature is disabled). Ensure you're using the official update channel.
+</Warning>
+
+## Uninstallation
+
+<Tabs>
+  <Tab title="Windows">
+    **Option 1: Windows Settings**
+    1. Open Settings > Apps > Installed apps
+    2. Find "Blink" in the list
+    3. Click the three dots and select "Uninstall"
+    
+    **Option 2: Uninstaller**
+    1. Navigate to the Blink installation directory
+    2. Run `Uninstall Blink.exe`
+    
+    <Note>
+    App data in `%APPDATA%\Blink` is preserved by default. Delete this folder manually if you want to remove all traces.
+    </Note>
+  </Tab>
+  
+  <Tab title="Linux">
+    Simply delete the AppImage file:
+    ```bash
+    rm "Blink {version}.AppImage"
+    ```
+    
+    To remove configuration:
+    ```bash
+    rm -rf ~/.config/Blink
+    ```
+  </Tab>
+</Tabs>
+
+## Troubleshooting
+
+### Windows: "Windows protected your PC" message
+
+This SmartScreen warning appears because Blink is not yet widely distributed. Click "More info" and then "Run anyway" to proceed.
+
+### Linux: AppImage won't run
+
+- Ensure the file is executable: `chmod +x "Blink {version}.AppImage"`
+- Install FUSE: `sudo apt install libfuse2` (Ubuntu/Debian)
+- Try extracting and running: `./"Blink {version}.AppImage" --appimage-extract-and-run`
+
+### Application crashes on startup
+
+1. Delete the configuration directory:
+   - Windows: `%APPDATA%\Blink`
+   - Linux: `~/.config/Blink`
+2. Relaunch Blink to create a fresh configuration
+
+## Next Steps
+
+Now that Blink is installed, check out the [Quickstart Guide](/quickstart) to learn how to:
+- Open your first project
+- Navigate the interface
+- Use keyboard shortcuts
+- Start editing code efficiently

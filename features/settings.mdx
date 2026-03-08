@@ -1,0 +1,608 @@
+---
+title: "Settings"
+description: "Customize your Blink Code Editor experience"
+---
+
+Blink Code Editor provides comprehensive customization options through the Settings panel. Configure fonts, editor behavior, cursor styles, and UI elements to match your preferences.
+
+## Accessing Settings
+
+Open the Settings panel from the navbar:
+
+1. Press `Alt` to reveal navbar links
+2. Click the **Edit** menu
+3. Select **Settings**
+
+The settings panel opens as a tab alongside your editor tabs.
+
+<Tip>
+Settings changes are applied in real-time, so you can see the effect immediately in your editor.
+</Tip>
+
+## Settings Architecture
+
+Settings are structured as typed configurations:
+
+```typescript
+export interface EditorSettings {
+  fontSize: number
+  fontFamily: string
+  lineHeight: number
+  tabSize: number
+  wordWrap: string
+  minimap: boolean
+  lineNumbers: string
+  cursorStyle: string
+  cursorBlinking: string
+  fontLigatures: boolean
+  scrollBeyondLastLine: boolean
+  renderWhitespace: string
+  bracketPairColorization: boolean
+}
+```
+
+### Default Values
+
+```typescript
+export const DEFAULT_EDITOR_SETTINGS: EditorSettings = {
+  fontSize: 14,
+  fontFamily: 'Geist Mono, monospace',
+  lineHeight: 24,
+  tabSize: 4,
+  wordWrap: 'off',
+  minimap: false,
+  lineNumbers: 'on',
+  cursorStyle: 'line',
+  cursorBlinking: 'blink',
+  fontLigatures: true,
+  scrollBeyondLastLine: false,
+  renderWhitespace: 'none',
+  bracketPairColorization: true,
+}
+```
+
+## Font Settings
+
+Customize the editor's typography:
+
+### Font Size
+
+```typescript
+{
+  key: 'fontSize',
+  displayName: 'Font Size',
+  monacoProperty: 'editor.fontSize',
+  description: 'Controls the font size in pixels in the editor.',
+  type: 'number',
+  value: settings.fontSize,
+  min: 8,
+  max: 40,
+  step: 1,
+}
+```
+
+- **Range**: 8-40 pixels
+- **Default**: 14px
+- **Monaco property**: `editor.fontSize`
+
+### Font Family
+
+```typescript
+{
+  key: 'fontFamily',
+  displayName: 'Font Family',
+  monacoProperty: 'editor.fontFamily',
+  description: 'Controls the font family used in the editor.',
+  type: 'font',
+  value: settings.fontFamily,
+}
+```
+
+- **Default**: "Geist Mono, monospace"
+- **Recommended fonts**:
+  - JetBrains Mono
+  - Fira Code
+  - Cascadia Code
+  - Source Code Pro
+
+<Note>
+Use fonts that support ligatures for the best coding experience. Blink enables ligatures by default.
+</Note>
+
+### Line Height
+
+```typescript
+{
+  key: 'lineHeight',
+  displayName: 'Line Height',
+  monacoProperty: 'editor.lineHeight',
+  description: 'Controls the line height. 0 means use the default.',
+  type: 'number',
+  value: settings.lineHeight,
+  min: 0,
+  max: 60,
+  step: 1,
+}
+```
+
+- **Range**: 0-60 pixels
+- **Default**: 24px
+- **Tip**: Set to 0 for automatic line height based on font size
+
+### Font Ligatures
+
+```typescript
+{
+  key: 'fontLigatures',
+  displayName: 'Font Ligatures',
+  monacoProperty: 'editor.fontLigatures',
+  description: 'Enables / disables font ligatures.',
+  type: 'toggle',
+  value: settings.fontLigatures,
+}
+```
+
+- **Default**: Enabled
+- **Effect**: Combines character sequences like `=>`, `!=`, `>=` into single glyphs
+
+<Accordion title="What are ligatures?">
+Ligatures are typographic features where multiple characters are combined into a single glyph. In coding fonts, ligatures improve readability for operators like:
+- `=>` becomes ⇒
+- `!=` becomes ≠
+- `>=` becomes ≥
+- `===` becomes a single combined symbol
+</Accordion>
+
+## Editor Settings
+
+Configure core editor behavior:
+
+### Tab Size
+
+```typescript
+{
+  key: 'tabSize',
+  displayName: 'Tab Size',
+  monacoProperty: 'editor.tabSize',
+  description: 'The number of spaces a tab is equal to.',
+  type: 'number',
+  value: settings.tabSize,
+  min: 1,
+  max: 16,
+}
+```
+
+- **Range**: 1-16 spaces
+- **Default**: 4 spaces
+- **Common values**: 2, 4, 8
+
+### Word Wrap
+
+```typescript
+{
+  key: 'wordWrap',
+  displayName: 'Word Wrap',
+  monacoProperty: 'editor.wordWrap',
+  description: 'Controls how lines should wrap.',
+  type: 'select',
+  value: settings.wordWrap,
+  options: [
+    { label: 'Off', value: 'off' },
+    { label: 'On', value: 'on' },
+    { label: 'Word Wrap Column', value: 'wordWrapColumn' },
+    { label: 'Bounded', value: 'bounded' },
+  ],
+}
+```
+
+<Tabs>
+  <Tab title="Off">
+    Lines never wrap. Use horizontal scrolling for long lines.
+  </Tab>
+  
+  <Tab title="On">
+    Lines wrap at the viewport width.
+  </Tab>
+  
+  <Tab title="Word Wrap Column">
+    Lines wrap at `editor.wordWrapColumn` value.
+  </Tab>
+  
+  <Tab title="Bounded">
+    Lines wrap at the minimum of viewport width and `editor.wordWrapColumn`.
+  </Tab>
+</Tabs>
+
+### Line Numbers
+
+```typescript
+{
+  key: 'lineNumbers',
+  displayName: 'Line Numbers',
+  monacoProperty: 'editor.lineNumbers',
+  description: 'Controls the display of line numbers.',
+  type: 'select',
+  value: settings.lineNumbers,
+  options: [
+    { label: 'On', value: 'on' },
+    { label: 'Off', value: 'off' },
+    { label: 'Relative', value: 'relative' },
+    { label: 'Interval', value: 'interval' },
+  ],
+}
+```
+
+- **On**: Show absolute line numbers
+- **Off**: Hide line numbers
+- **Relative**: Show distance from cursor position (vim-style)
+- **Interval**: Show numbers every 10 lines
+
+### Render Whitespace
+
+```typescript
+{
+  key: 'renderWhitespace',
+  displayName: 'Render Whitespace',
+  monacoProperty: 'editor.renderWhitespace',
+  description: 'Controls rendering of whitespace characters.',
+  type: 'select',
+  value: settings.renderWhitespace,
+  options: [
+    { label: 'None', value: 'none' },
+    { label: 'Boundary', value: 'boundary' },
+    { label: 'Selection', value: 'selection' },
+    { label: 'Trailing', value: 'trailing' },
+    { label: 'All', value: 'all' },
+  ],
+}
+```
+
+<CardGroup cols={2}>
+  <Card title="None">
+    No whitespace visualization
+  </Card>
+  
+  <Card title="Boundary">
+    Show whitespace at word boundaries
+  </Card>
+  
+  <Card title="Selection">
+    Show whitespace in selected text
+  </Card>
+  
+  <Card title="Trailing">
+    Show trailing whitespace at line ends
+  </Card>
+  
+  <Card title="All">
+    Show all whitespace characters
+  </Card>
+</CardGroup>
+
+### Scroll Beyond Last Line
+
+```typescript
+{
+  key: 'scrollBeyondLastLine',
+  displayName: 'Scroll Beyond Last Line',
+  monacoProperty: 'editor.scrollBeyondLastLine',
+  description: 'Controls whether the editor will scroll beyond the last line.',
+  type: 'toggle',
+  value: settings.scrollBeyondLastLine,
+}
+```
+
+- **Default**: Disabled
+- **Effect**: When enabled, you can scroll past the last line to center it on screen
+
+### Bracket Pair Colorization
+
+```typescript
+{
+  key: 'bracketPairColorization',
+  displayName: 'Bracket Pair Colorization',
+  monacoProperty: 'editor.bracketPairColorization.enabled',
+  description: 'Controls whether bracket pair colorization is enabled.',
+  type: 'toggle',
+  value: settings.bracketPairColorization,
+}
+```
+
+- **Default**: Enabled
+- **Effect**: Matching brackets are colored to show nesting levels
+
+<Tip>
+Bracket pair colorization makes it much easier to identify matching brackets in deeply nested code.
+</Tip>
+
+## Cursor Settings
+
+Customize cursor appearance and animation:
+
+### Cursor Style
+
+```typescript
+{
+  key: 'cursorStyle',
+  displayName: 'Cursor Style',
+  monacoProperty: 'editor.cursorStyle',
+  description: 'Controls the cursor style.',
+  type: 'select',
+  value: settings.cursorStyle,
+  options: [
+    { label: 'Line', value: 'line' },
+    { label: 'Block', value: 'block' },
+    { label: 'Underline', value: 'underline' },
+    { label: 'Line (thin)', value: 'line-thin' },
+    { label: 'Block (outline)', value: 'block-outline' },
+    { label: 'Underline (thin)', value: 'underline-thin' },
+  ],
+}
+```
+
+<Tabs>
+  <Tab title="Line">
+    Vertical line cursor (default)
+  </Tab>
+  
+  <Tab title="Block">
+    Block cursor covering the entire character
+  </Tab>
+  
+  <Tab title="Underline">
+    Horizontal line under the character
+  </Tab>
+  
+  <Tab title="Thin Variants">
+    Thinner versions of line, block, and underline styles
+  </Tab>
+</Tabs>
+
+### Cursor Blinking
+
+```typescript
+{
+  key: 'cursorBlinking',
+  displayName: 'Cursor Blinking',
+  monacoProperty: 'editor.cursorBlinking',
+  description: 'Controls the cursor animation style.',
+  type: 'select',
+  value: settings.cursorBlinking,
+  options: [
+    { label: 'Blink', value: 'blink' },
+    { label: 'Smooth', value: 'smooth' },
+    { label: 'Phase', value: 'phase' },
+    { label: 'Expand', value: 'expand' },
+    { label: 'Solid', value: 'solid' },
+  ],
+}
+```
+
+- **Blink**: Standard blinking animation
+- **Smooth**: Smooth fade in/out
+- **Phase**: Fades in/out with phase shift
+- **Expand**: Expands and contracts
+- **Solid**: No animation, always visible
+
+## UI Settings
+
+Control visual interface elements:
+
+### Minimap
+
+```typescript
+{
+  key: 'minimap',
+  displayName: 'Minimap',
+  monacoProperty: 'editor.minimap.enabled',
+  description: 'Controls whether the minimap is shown.',
+  type: 'toggle',
+  value: settings.minimap,
+}
+```
+
+- **Default**: Disabled
+- **Effect**: Shows a small overview of the entire file on the right side
+
+<Note>
+Disabling the minimap provides more horizontal space for code, which is why it's off by default in Blink.
+</Note>
+
+## Settings Panel UI
+
+The settings interface is organized into sections:
+
+```typescript
+<SettingSection title="Font">
+  {fontSettings.map((s) => (
+    <SettingRow key={s.key} setting={s} onChange={handleChange} />
+  ))}
+</SettingSection>
+
+<SettingSection title="Editor">
+  {editorSettings.map((s) => (
+    <SettingRow key={s.key} setting={s} onChange={handleChange} />
+  ))}
+</SettingSection>
+
+<SettingSection title="Cursor">
+  {cursorSettings.map((s) => (
+    <SettingRow key={s.key} setting={s} onChange={handleChange} />
+  ))}
+</SettingSection>
+
+<SettingSection title="UI">
+  {uiSettings.map((s) => (
+    <SettingRow key={s.key} setting={s} onChange={handleChange} />
+  ))}
+</SettingSection>
+```
+
+### Setting Row Components
+
+Each setting is displayed with:
+
+```typescript
+<div className="setting_row">
+  <div className="setting_info">
+    <span className="setting_name">{setting.displayName}</span>
+    <span className="setting_description">{setting.description}</span>
+    <code className="setting_property">{setting.monacoProperty}</code>
+  </div>
+  <div className="setting_control">
+    {/* Input control based on type */}
+  </div>
+</div>
+```
+
+- **Name**: Human-readable label
+- **Description**: Short explanation
+- **Monaco property**: Corresponding Monaco editor option
+- **Control**: Input, select, or toggle based on type
+
+## Control Types
+
+Settings use different control types:
+
+### Number Input
+
+```typescript
+<input
+  type="number"
+  className="setting_input"
+  value={setting.value as number}
+  min={setting.min}
+  max={setting.max}
+  step={setting.step ?? 1}
+  onChange={(e) => onChange(setting.key, Number(e.target.value))}
+/>
+```
+
+### Text Input (Font)
+
+```typescript
+<input
+  type="text"
+  className="setting_input setting_input--text"
+  value={setting.value as string}
+  onChange={(e) => onChange(setting.key, e.target.value)}
+  placeholder="Font family name..."
+/>
+```
+
+### Select Dropdown
+
+```typescript
+<select
+  className="setting_select"
+  value={String(setting.value)}
+  onChange={(e) => {
+    const opt = setting.options?.find(o => String(o.value) === e.target.value)
+    onChange(setting.key, opt ? opt.value : e.target.value)
+  }}
+>
+  {setting.options?.map((opt) => (
+    <option key={String(opt.value)} value={String(opt.value)}>
+      {opt.label}
+    </option>
+  ))}
+</select>
+```
+
+### Toggle Switch
+
+```typescript
+<button
+  className={`setting_toggle ${setting.value ? 'active' : ''}`}
+  onClick={() => onChange(setting.key, !setting.value)}
+  aria-pressed={!!setting.value}
+  role="switch"
+>
+  <span className="toggle_knob" />
+</button>
+```
+
+## Settings Persistence
+
+Blink includes a button to open the settings JSON file:
+
+```typescript
+<div className="settings_footer">
+  <button className="settings_folder_btn" onClick={onOpenSettingsFolder}>
+    Open settings.json
+  </button>
+</div>
+```
+
+<Tip>
+Future versions of Blink will automatically save settings to `settings.json` for persistence across sessions.
+</Tip>
+
+## Real-time Updates
+
+Settings changes are immediately applied to the editor:
+
+```typescript
+const handleChange = (key: string, value: any) => {
+  onSettingChange(key as keyof EditorSettings, value)
+}
+
+// In Editor.tsx
+options={{
+  fontSize: settings.fontSize,
+  minimap: { enabled: settings.minimap },
+  fontFamily: settings.fontFamily,
+  lineHeight: settings.lineHeight,
+  tabSize: settings.tabSize,
+  wordWrap: settings.wordWrap as any,
+  lineNumbers: settings.lineNumbers as any,
+  cursorStyle: settings.cursorStyle as any,
+  cursorBlinking: settings.cursorBlinking as any,
+  fontLigatures: settings.fontLigatures,
+  renderWhitespace: settings.renderWhitespace as any,
+  bracketPairColorization: { enabled: settings.bracketPairColorization },
+}}
+```
+
+## Recommended Configurations
+
+### Minimal Setup
+
+```typescript
+{
+  fontSize: 14,
+  fontFamily: 'Geist Mono, monospace',
+  minimap: false,
+  lineNumbers: 'on',
+  cursorStyle: 'line',
+  cursorBlinking: 'blink',
+}
+```
+
+### Vim-style
+
+```typescript
+{
+  lineNumbers: 'relative',
+  cursorStyle: 'block',
+  cursorBlinking: 'solid',
+}
+```
+
+### Maximum Visibility
+
+```typescript
+{
+  fontSize: 16,
+  lineHeight: 28,
+  renderWhitespace: 'all',
+  bracketPairColorization: true,
+  minimap: true,
+}
+```
+
+## Next Steps
+
+- Apply settings to the [Monaco Editor](/features/editor)
+- Use settings with the [File Explorer](/features/file-explorer)
+- Configure the [Integrated Terminal](/features/terminal)

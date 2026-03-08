@@ -1,0 +1,355 @@
+---
+title: "File Explorer"
+description: "Navigate and manage your project files"
+---
+
+The File Explorer provides an intuitive tree view for navigating and managing your project files and folders. It includes advanced features like drag-and-drop, context menus, keyboard shortcuts, and visual file type indicators.
+
+## Overview
+
+The explorer component consists of:
+
+- **Tree View**: Hierarchical display of files and folders
+- **Resizable Panel**: Adjustable width from 150px to 600px
+- **File Type Icons**: Visual indicators with color coding
+- **Keyboard Shortcuts**: Quick file operations
+- **Context Menu**: Right-click actions
+- **Drag-and-Drop**: Move files and folders
+
+<Note>
+The explorer panel is resizable by dragging the edge. The width is preserved across sessions.
+</Note>
+
+## Resizable Panel
+
+The explorer panel can be resized to your preference:
+
+```typescript
+const [width, setWidth] = useState(250)
+const isResizing = useRef(false)
+
+const handleMouseMove = useCallback((e: MouseEvent) => {
+  if (!isResizing.current) return
+  
+  // Calculate new width based on sidebar offset (approx 64px)
+  const newWidth = e.clientX - 64
+  if (newWidth > 150 && newWidth < 600) {
+    setWidth(newWidth)
+  }
+}, [])
+```
+
+<Tip>
+Hover over the right edge of the explorer panel until you see the resize cursor, then drag to adjust the width.
+</Tip>
+
+## Tree View
+
+The tree view displays your project structure with expandable/collapsible folders:
+
+```typescript
+interface TreeNode {
+  name: string
+  type: FileType | string
+  path: string
+  children?: TreeNode[]
+  hasChildren?: boolean
+}
+```
+
+### Expanding Folders
+
+Click on folders to expand or collapse them:
+
+```typescript
+const handleClick = async (e: React.MouseEvent) => {
+  e.stopPropagation()
+  onSelect(node.path)
+  
+  if (node.type === 'folder') {
+    const nextOpenState = !isOpen
+    setIsOpen(nextOpenState)
+    
+    if (nextOpenState && (!node.children || node.children.length === 0) && node.hasChildren) {
+      setIsLoading(true)
+      try {
+        await onExpand(node.path)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+  }
+}
+```
+
+<Accordion title="Folder States">
+  - **Collapsed**: Shows right chevron icon (▶)
+  - **Expanded**: Shows down chevron icon (▼)
+  - **Loading**: Shows spinning icon while loading children
+  - **Empty**: Expanded folders with no children show nothing
+</Accordion>
+
+## File Type Icons
+
+The explorer displays color-coded icons for different file types:
+
+```typescript
+// Icon and color determination
+let iconData = typeIconMap.file
+if (node.type === 'folder') {
+  const folderKey = node.name.startsWith('.') ? node.name.slice(1) : node.name
+  if (node.name in typeIconMap) {
+    iconData = typeIconMap[node.name as keyof typeof typeIconMap]
+  } else if (folderKey in typeIconMap) {
+    iconData = typeIconMap[folderKey as keyof typeof typeIconMap]
+  } else {
+    iconData = typeIconMap.folder
+  }
+} else {
+  const extension = node.name.split('.').pop()
+  if (extension && extension in typeIconMap) {
+    iconData = typeIconMap[extension as keyof typeof typeIconMap]
+  }
+}
+```
+
+### Recognized File Types
+
+Blink recognizes and displays icons for:
+
+<CardGroup cols={3}>
+  <Card title="Code Files">
+    - `.ts`, `.tsx` - TypeScript
+    - `.js`, `.jsx` - JavaScript
+    - `.py` - Python
+    - `.java` - Java
+    - `.cpp`, `.c` - C/C++
+  </Card>
+  
+  <Card title="Web Files">
+    - `.html` - HTML
+    - `.css`, `.scss` - Stylesheets
+    - `.json` - JSON
+    - `.xml` - XML
+    - `.md` - Markdown
+  </Card>
+  
+  <Card title="Special Folders">
+    - `node_modules`
+    - `.git`
+    - `src`
+    - `dist`
+    - `public`
+  </Card>
+</CardGroup>
+
+## Keyboard Shortcuts
+
+Quickly create files and folders with keyboard shortcuts:
+
+| Action | Shortcut |
+|--------|----------|
+| New File | `Ctrl + N` |
+| New Folder | `Ctrl + Shift + N` |
+
+```typescript
+<ExplorerHeader 
+  onNewFile={onNewFile} 
+  onNewFolder={onNewFolder} 
+/>
+```
+
+<Tip>
+New files and folders are created in the currently selected directory. Select a folder first to create items inside it.
+</Tip>
+
+## Context Menu
+
+Right-click on any file or folder to access the context menu:
+
+```typescript
+const handleContextMenu = (e: React.MouseEvent) => {
+  e.preventDefault()
+  e.stopPropagation()
+  onContextMenu(e, node)
+}
+```
+
+Context menu actions:
+
+<Tabs>
+  <Tab title="Copy">
+    Copy the selected file or folder to the clipboard.
+  </Tab>
+  
+  <Tab title="Cut">
+    Cut the selected file or folder for moving.
+  </Tab>
+  
+  <Tab title="Paste">
+    Paste the copied or cut item to the selected location.
+  </Tab>
+  
+  <Tab title="Rename">
+    Rename the selected file or folder.
+  </Tab>
+  
+  <Tab title="Delete">
+    Remove the selected file or folder.
+  </Tab>
+</Tabs>
+
+## Drag-and-Drop
+
+Move files and folders by dragging them to new locations:
+
+```typescript
+const handleDragStart = (e: React.DragEvent) => {
+  e.dataTransfer.setData('srcPath', node.path)
+  e.dataTransfer.effectAllowed = 'move'
+}
+
+const handleDragOver = (e: React.DragEvent) => {
+  e.preventDefault()
+  e.stopPropagation()
+  if (node.type === 'folder') {
+    setIsDragOver(true)
+    e.dataTransfer.dropEffect = 'move'
+  }
+}
+
+const handleDrop = (e: React.DragEvent) => {
+  e.preventDefault()
+  e.stopPropagation()
+  setIsDragOver(false)
+  
+  const srcPath = e.dataTransfer.getData('srcPath')
+  if (srcPath && srcPath !== node.path) {
+    onMove(srcPath, node.path)
+  }
+}
+```
+
+### Drag-and-Drop Workflow
+
+1. **Click and hold** on a file or folder
+2. **Drag** to the target folder (it will highlight)
+3. **Release** to move the item
+
+<Note>
+Only folders can be drop targets. Files and folders can be dragged, but only folders accept drops.
+</Note>
+
+## Visual Feedback
+
+The explorer provides visual feedback for interactions:
+
+```typescript
+<div 
+  className={`tree-item 
+    ${isLoading ? 'loading' : ''} 
+    ${selectedPath === node.path ? 'selected' : ''} 
+    ${isDragOver ? 'drag-over' : ''}`}
+  style={{ paddingLeft: `${depth * 10 + 5}px` }}
+>
+```
+
+<Accordion title="Visual States">
+  - **Selected**: Highlighted background for the currently selected item
+  - **Loading**: Spinning icon when loading folder contents
+  - **Drag Over**: Highlighted when dragging an item over a folder
+  - **Indentation**: Nested items are indented by 10px per level
+</Accordion>
+
+## File Operations
+
+The explorer supports comprehensive file operations:
+
+### Creating Files
+
+```typescript
+// Create new file with Ctrl + N
+onNewFile()
+```
+
+### Creating Folders
+
+```typescript
+// Create new folder with Ctrl + Shift + N
+onNewFolder()
+```
+
+### Opening Files
+
+Click on any file to open it in the editor:
+
+```typescript
+// Open file in editor
+const extension = node.name.split('.').pop()
+const passType = (extension && extension in typeIconMap) 
+  ? extension 
+  : node.type
+onFileClick(node.name, passType as FileType, node.path)
+```
+
+### Moving Files
+
+```typescript
+// Move file via drag-and-drop
+onMove(srcPath, targetPath)
+```
+
+## Selection Management
+
+The explorer maintains a single selection state:
+
+```typescript
+// Select item on click
+onSelect(node.path)
+
+// Visual indication
+<div className={selectedPath === node.path ? 'selected' : ''}>
+```
+
+<Tip>
+The selected item is preserved when you switch between tabs in the editor. This makes it easy to return to the explorer context.
+</Tip>
+
+## Last Session Directory
+
+Blink remembers your last opened directory:
+
+- Automatically reopens the last workspace on launch
+- Preserves folder expansion states
+- Maintains selection context
+
+## Performance
+
+The explorer is optimized for large projects:
+
+- **Lazy loading**: Folder contents are loaded on demand
+- **Virtual rendering**: Only visible items are rendered
+- **Efficient updates**: React optimization prevents unnecessary re-renders
+- **Event delegation**: Single event listeners for tree operations
+
+## Explorer Header
+
+The header provides quick access to file operations:
+
+```typescript
+<ExplorerHeader 
+  onNewFile={onNewFile} 
+  onNewFolder={onNewFolder} 
+/>
+```
+
+Header features:
+- New file button
+- New folder button
+- Workspace name display
+
+## Next Steps
+
+- Open files in the [Monaco Editor](/features/editor)
+- Customize your experience in [Settings](/features/settings)
+- Learn about the [Integrated Terminal](/features/terminal)

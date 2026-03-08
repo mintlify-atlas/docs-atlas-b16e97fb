@@ -1,80 +1,483 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: Quickstart Guide
+description: Get up and running with Blink Code Editor in minutes
 ---
 
-## Get started in three steps
+## Welcome to Blink
 
-Get your documentation site running locally and make your first customization.
-
-### Step 1: Set up your local environment
-
-<AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
-  </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 2: Deploy your changes
-
-<AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
-
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
-
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
-  </Accordion>
-</AccordionGroup>
-
-### Step 3: Go live
-
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
-
-## Next steps
-
-Now that you have your docs running, explore these key features:
-
-<CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
-</CardGroup>
+This guide will help you open your first project, navigate the interface, and start coding with Blink's powerful features. By the end, you'll be editing files, using the terminal, and leveraging keyboard shortcuts like a pro.
 
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+Blink is designed for speed and efficiency. Every feature is built to eliminate latency and keep you in the flow.
 </Note>
+
+## Opening Your First Project
+
+<Steps>
+  <Step title="Launch Blink">
+    Start Blink from your applications menu or desktop shortcut.
+    
+    On first launch, you'll see the onboarding screens. Review the introduction and click through to reach the main editor.
+  </Step>
+  
+  <Step title="Open a Folder">
+    Blink works with folder-based projects. To open a folder:
+    
+    **Method 1: Keyboard Shortcut**
+    - Press `Ctrl+O` (Windows/Linux)
+    - Select your project folder in the dialog
+    
+    **Method 2: Welcome Screen**
+    - Click "Open Folder" from the editor welcome screen
+    - Browse to your project directory
+    
+    The file explorer on the left will populate with your project structure.
+  </Step>
+  
+  <Step title="Start Editing">
+    Click any file in the explorer to open it in the editor. The file content appears in the main editing area with:
+    - Syntax highlighting
+    - Line numbers
+    - Code error detection
+    - Auto-save on `Ctrl+S`
+  </Step>
+</Steps>
+
+<Warning>
+Blink remembers your last opened folder. When you relaunch, it automatically loads your most recent project.
+</Warning>
+
+## Understanding the Interface
+
+Blink's interface is divided into several key areas:
+
+```
+┌────────────────────────────────────────────────┐
+│ Navbar (File, Edit, Help, Update)             │
+├──────┬─────────────────────────────────────────┤
+│      │ Editor Tabs                             │
+│ File ├─────────────────────────────────────────┤
+│ Ex-  │                                         │
+│ plor │ Main Editor Area                        │
+│ er   │ (Monaco Editor)                         │
+│      │                                         │
+├──────┴─────────────────────────────────────────┤
+│ Bottom Bar (Cursor, Errors, Warnings)         │
+├───────────────────────────────────────────────┤
+│ Problems/Terminal Panel (toggleable)          │
+└───────────────────────────────────────────────┘
+```
+
+### Navbar
+
+The top navbar provides access to core functions:
+- Press **ALT** to reveal navigation links and the update button
+- Access settings from the "Edit" menu
+- Check for updates when available
+
+### File Explorer (Left Sidebar)
+
+The file explorer displays your project structure in a tree view:
+
+- Click files to open them
+- Click folders to expand/collapse
+- Right-click for context menu (copy, paste, rename, delete)
+- Drag and drop files and folders to reorganize
+- Icons indicate file types (JavaScript, TypeScript, images, etc.)
+
+**File Explorer Features:**
+- Resizable width (drag the right edge)
+- Keyboard navigation support
+- Visual indicators for selected items
+- Supports nested folder structures
+
+### Editor Area
+
+The main editor uses Monaco Editor (the same engine that powers VS Code) for a familiar editing experience:
+
+- **Tabs**: Multiple files open in tabs at the top
+- **Syntax Highlighting**: Automatic language detection
+- **Error Detection**: Red squiggles for errors, yellow for warnings
+- **Line Numbers**: Always visible on the left
+- **Minimap**: Optional code overview on the right (configurable in settings)
+
+**Editor Customization:**
+Access settings via the navbar "Edit" menu to configure:
+- Font size and family
+- Cursor style (line, block, underline)
+- Minimap visibility
+- Line numbers style
+
+### Bottom Bar
+
+The status bar at the bottom shows:
+- **Cursor Position**: Current line and column
+- **Error Count**: Total errors in the current file (red)
+- **Warning Count**: Total warnings (yellow)
+
+Click the error/warning count to open the Problems panel.
+
+### Problems and Terminal Panel
+
+Toggle this panel with `Ctrl+\`` (backtick). It contains two tabs:
+
+**Problems Tab:**
+- Lists all errors and warnings in your files
+- Shows file path, line number, and error message
+- Click any problem to jump to that location in the editor
+- Severity indicated by color and icon
+
+**Terminal Tab:**
+- Built-in terminal integrated into Blink
+- Automatically sets current directory to your project folder
+- Full xterm.js implementation with ANSI color support
+- Resize panel height by dragging the top edge
+
+## Essential Keyboard Shortcuts
+
+Blink is optimized for keyboard-driven workflows. Master these shortcuts to maximize productivity:
+
+### File Operations
+
+<CodeGroup>
+```text File Management
+Ctrl+O          Open folder
+Ctrl+S          Save current file
+Ctrl+N          Create new file
+Ctrl+Shift+N    Create new folder
+```
+
+```text Navigation
+Ctrl+Tab        Switch between open tabs
+Click tab       Focus that file
+Middle-click    Close tab
+```
+</CodeGroup>
+
+### Editing
+
+<CodeGroup>
+```text Code Editing
+Ctrl+Z          Undo
+Ctrl+Y          Redo
+Ctrl+C          Copy
+Ctrl+V          Paste
+Ctrl+X          Cut
+Ctrl+F          Find in file
+Ctrl+H          Find and replace
+```
+
+```text Selection
+Ctrl+A          Select all
+Shift+Arrow     Extend selection
+Ctrl+D          Select next occurrence
+```
+</CodeGroup>
+
+### View and Navigation
+
+<CodeGroup>
+```text Panels
+Ctrl+`          Toggle terminal/problems panel
+ALT             Show navbar menu
+Click status    Toggle problems panel
+```
+
+```text File Explorer
+Arrow Keys      Navigate files
+Enter           Open selected file
+Right-click     Context menu
+```
+</CodeGroup>
+
+### Context Menu Actions
+
+Right-click any file or folder in the explorer to:
+- **Copy**: Copy to clipboard
+- **Cut**: Cut for moving
+- **Paste**: Paste from clipboard
+- **Rename**: Rename the item (opens modal)
+- **Delete**: Permanently delete (use with caution)
+
+## Working with Files
+
+### Creating Files and Folders
+
+<Steps>
+  <Step title="Using Keyboard Shortcuts">
+    - Press `Ctrl+N` to create a new file
+    - Press `Ctrl+Shift+N` to create a new folder
+    - A modal appears prompting for the name
+    - Type the name and press Enter
+  </Step>
+  
+  <Step title="Using Explorer Buttons">
+    - Click the "New File" icon (📄) in the explorer header
+    - Click the "New Folder" icon (📁) in the explorer header
+    - Enter the name in the modal
+  </Step>
+  
+  <Step title="Location">
+    New items are created in:
+    - The currently selected folder (if a folder is selected)
+    - The parent folder (if a file is selected)
+    - The project root (if nothing is selected)
+  </Step>
+</Steps>
+
+### Saving Files
+
+Blink tracks file modifications:
+
+- Modified files show a dot indicator on their tab
+- Press `Ctrl+S` to save the current file
+- The dot disappears when the file is saved
+- Unsaved changes are preserved if you switch tabs
+
+<Note>
+Blink does not auto-save. Always press `Ctrl+S` to persist your changes.
+</Note>
+
+### Opening Multiple Files
+
+Blink supports multiple open files in tabs:
+
+1. Click files in the explorer to open them
+2. Each file opens in a new tab
+3. Click tabs to switch between files
+4. Close tabs by clicking the X or middle-clicking
+5. The active tab is highlighted
+
+**Image Files:**
+Blink includes an image preview feature:
+- PNG, JPG, JPEG, GIF, SVG, and ICO files open in preview mode
+- The image is displayed at actual size
+- No editing is available for images
+
+## Using the Terminal
+
+Blink's integrated terminal provides full command-line access:
+
+<Steps>
+  <Step title="Open Terminal">
+    Press `Ctrl+\`` (Control + backtick) to toggle the terminal panel.
+    
+    If the panel was showing problems, it switches to the terminal tab.
+  </Step>
+  
+  <Step title="Run Commands">
+    The terminal automatically sets the working directory to your project folder.
+    
+    Example workflows:
+    ```bash
+    # Install dependencies
+    npm install
+    
+    # Start development server
+    npm run dev
+    
+    # Run tests
+    npm test
+    
+    # Git operations
+    git status
+    git add .
+    git commit -m "Update"
+    ```
+  </Step>
+  
+  <Step title="Resize Panel">
+    Drag the top edge of the terminal panel to adjust its height.
+    
+    Blink remembers your preferred size.
+  </Step>
+</Steps>
+
+<Warning>
+The terminal uses node-pty for true terminal emulation. It supports ANSI colors and most terminal programs, but complex TUI applications may have issues.
+</Warning>
+
+## Handling Errors and Warnings
+
+Blink automatically detects errors and warnings in your code:
+
+### In the Editor
+
+- **Red squiggly lines**: Syntax errors or critical issues
+- **Yellow squiggly lines**: Warnings or style issues
+- Hover over marked code to see the error message
+
+### In the Bottom Bar
+
+- Error count (red) shows total errors
+- Warning count (yellow) shows total warnings
+- Click the count to open the Problems panel
+
+### In the Problems Panel
+
+1. Press `Ctrl+\`` or click the error count
+2. Switch to the "Problems" tab if needed
+3. The panel lists all issues with:
+   - Severity icon (⚠️ warning, ❌ error)
+   - File path
+   - Line and column number
+   - Error message
+4. Click any issue to jump directly to that line in the editor
+
+## Customizing Your Editor
+
+Access settings to personalize Blink:
+
+<Steps>
+  <Step title="Open Settings">
+    - Press **ALT** to show the navbar
+    - Click "Edit" → "Settings"
+    - The settings panel opens
+  </Step>
+  
+  <Step title="Configure Options">
+    Available settings:
+    
+    **Font Settings:**
+    - Font size (10-30px)
+    - Font family (monospace fonts)
+    
+    **Editor Settings:**
+    - Line numbers (on/off/relative/interval)
+    - Word wrap (on/off)
+    - Tab size (2/4/8 spaces)
+    
+    **Cursor Settings:**
+    - Style (line/block/underline)
+    - Blink rate
+    
+    **Minimap:**
+    - Show/hide code minimap
+    - Minimap side (left/right)
+  </Step>
+  
+  <Step title="Save Settings">
+    Settings are automatically saved when changed.
+    
+    They persist across restarts and are stored in:
+    - Windows: `%APPDATA%\Blink`
+    - Linux: `~/.config/Blink`
+  </Step>
+</Steps>
+
+## Drag and Drop
+
+Blink supports drag and drop for file organization:
+
+- Click and hold a file or folder in the explorer
+- Drag it over a folder (the folder highlights)
+- Release to move the item into that folder
+- The explorer updates automatically
+
+<Note>
+Drag and drop performs a move operation (not copy). The item is relocated to the target folder.
+</Note>
+
+## Session Persistence
+
+Blink remembers your workspace:
+
+- **Last opened folder**: Automatically reopens on launch
+- **Settings**: Persist across sessions
+- **Window size and position**: Saved and restored
+- **Changelog view**: Only shown once per version
+
+To clear session history:
+1. Close Blink
+2. Delete the configuration directory
+3. Relaunch to start fresh
+
+## Example Workflow
+
+Here's a typical workflow for working on a web project:
+
+<Steps>
+  <Step title="Open Project">
+    Press `Ctrl+O` and select your project folder (e.g., `my-web-app`).
+  </Step>
+  
+  <Step title="Browse Files">
+    In the file explorer, navigate to `src/index.js` and click to open it.
+  </Step>
+  
+  <Step title="Edit Code">
+    Make changes to the file. Notice the tab shows a dot indicating unsaved changes.
+    
+    If there are syntax errors, you'll see red squiggles and the error count updates in the bottom bar.
+  </Step>
+  
+  <Step title="Check Problems">
+    Click the error count or press `Ctrl+\`` to open the Problems panel.
+    
+    Review errors and click one to jump to the problematic line.
+  </Step>
+  
+  <Step title="Fix and Save">
+    Correct the error and press `Ctrl+S` to save.
+    
+    The error count updates and the tab indicator clears.
+  </Step>
+  
+  <Step title="Run Development Server">
+    Press `Ctrl+\`` to switch to the terminal tab.
+    
+    Run `npm run dev` to start your dev server.
+    
+    The terminal shows server output with full color support.
+  </Step>
+  
+  <Step title="Create New Component">
+    Press `Ctrl+N`, name the file `Button.js`, and start coding.
+    
+    Blink's syntax highlighting helps you write clean code quickly.
+  </Step>
+</Steps>
+
+## Tips for Maximum Productivity
+
+<CardGroup cols={2}>
+  <Card title="Master Keyboard Shortcuts" icon="keyboard">
+    Memorize `Ctrl+O`, `Ctrl+S`, `Ctrl+N`, and `Ctrl+\`` to avoid reaching for the mouse.
+  </Card>
+  
+  <Card title="Use the Problems Panel" icon="triangle-exclamation">
+    Don't wait for runtime errors. Check the Problems panel regularly to catch issues early.
+  </Card>
+  
+  <Card title="Resize Panels" icon="arrows-left-right">
+    Adjust the file explorer and terminal panel sizes to match your workflow.
+  </Card>
+  
+  <Card title="Right-Click Everything" icon="mouse-pointer">
+    The context menu provides quick access to file operations without memorizing shortcuts.
+  </Card>
+</CardGroup>
+
+## What's Next?
+
+Now that you're familiar with Blink's core features, explore:
+
+- **Settings**: Customize the editor to match your preferences
+- **Terminal Integration**: Use built-in terminal for Git, npm, and other CLI tools
+- **File Management**: Organize projects with drag-and-drop and context menus
+- **Keyboard Shortcuts**: Speed up your workflow with powerful key bindings
+
+Blink is under active development. Check for updates regularly by pressing **ALT** and looking for the update button in the navbar.
+
+<Note>
+Found a bug or have a feature request? Visit the [Blink GitHub repository](https://github.com/BlinkCodeEditor/Blink) to contribute or report issues.
+</Note>
+
+## Getting Help
+
+- **Documentation**: Browse these docs for detailed guides
+- **GitHub Issues**: Report bugs or request features
+- **Community**: Join discussions on GitHub
+- **License**: Blink is open source under the MIT License
+
+Happy coding with Blink! 🚀

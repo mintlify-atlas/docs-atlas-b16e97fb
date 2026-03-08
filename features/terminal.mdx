@@ -1,0 +1,393 @@
+---
+title: "Integrated Terminal"
+description: "Built-in terminal with node-pty integration"
+---
+
+Blink Code Editor includes a fully integrated terminal powered by xterm.js and node-pty, providing a native terminal experience directly within your editor.
+
+## Overview
+
+The integrated terminal offers:
+
+- **xterm.js**: Full-featured terminal emulator
+- **node-pty**: Native pseudo-terminal (PTY) integration
+- **Multiple Shells**: Support for PowerShell, bash, and other shells
+- **Auto-directory**: Automatically opens in your workspace directory
+- **Resizable Panel**: Adjustable terminal height
+- **Custom Theme**: Terminal colors match Blink's design
+
+<Tip>
+Open the terminal with `Ctrl + \`` (backtick) to toggle visibility.
+</Tip>
+
+## Terminal Architecture
+
+The terminal uses a renderer-main process architecture:
+
+```typescript
+import { Terminal } from '@xterm/xterm'
+import { FitAddon } from '@xterm/addon-fit'
+import '@xterm/xterm/css/xterm.css'
+
+interface TerminalPanelProps {
+  cwd?: string
+  profile?: TerminalProfile
+}
+```
+
+### Process Flow
+
+1. **Renderer**: xterm.js instance in the UI
+2. **IPC**: Electron IPC for process communication
+3. **Main Process**: node-pty spawns the actual shell process
+
+## Terminal Configuration
+
+The terminal is configured with optimal settings and theming:
+
+```typescript
+const term = new Terminal({
+  cursorBlink: true,
+  fontSize: 13,
+  fontFamily: '"JetBrainsMono","Geist Mono", monospace',
+  fontWeight: '500',
+  drawBoldTextInBrightColors: false,
+  fontWeightBold: '500',
+  letterSpacing: 1,
+  allowProposedApi: true,
+  theme: {
+    background: '#17161a',       // Matches Blink background
+    foreground: '#f3f3f3',       // White text
+    cursor: '#217DFF',           // Primary blue cursor
+    cursorAccent: '#17161a',     // Cursor text color
+    selectionBackground: 'rgba(33, 125, 255, 0.3)',
+    
+    // ANSI Colors
+    black: '#131313',
+    red: '#ff0707',              // Error color
+    green: '#5cb85c',            // Success color
+    yellow: '#ffc107',           // Warning color
+    blue: '#217DFF',             // Primary color
+    magenta: '#1961c7',
+    cyan: '#777777',
+    white: '#b4b4b4',
+    
+    // Bright variants
+    brightBlack: '#777777',
+    brightRed: '#ff4d4d',
+    brightGreen: '#85d085',
+    brightYellow: '#ffd54f',
+    brightBlue: '#60a5fa',
+    brightMagenta: '#217DFF',
+    brightCyan: '#b4b4b4',
+    brightWhite: '#f3f3f3',
+  },
+  allowTransparency: true,
+  scrollback: 5000,
+})
+```
+
+<Note>
+The terminal theme is carefully designed to match Blink's overall color scheme for a cohesive experience.
+</Note>
+
+## FitAddon Integration
+
+The terminal automatically resizes to fit the available space:
+
+```typescript
+const fitAddon = new FitAddon()
+term.loadAddon(fitAddon)
+term.open(containerRef.current)
+
+// Initial fit after render
+requestAnimationFrame(() => {
+  try { 
+    fitAddon.fit() 
+  } catch { 
+    /* not yet visible */ 
+  }
+})
+```
+
+### Resize Observer
+
+The terminal reflows automatically when the panel is resized:
+
+```typescript
+const ro = new ResizeObserver(() => fit())
+ro.observe(containerRef.current)
+
+const fit = useCallback(() => {
+  if (!fitAddonRef.current || !terminalIdRef.current) return
+  try {
+    fitAddonRef.current.fit()
+    const dims = fitAddonRef.current.proposeDimensions()
+    if (dims && dims.cols > 0 && dims.rows > 0) {
+      window.electronAPI.send(
+        'terminal:resize', 
+        terminalIdRef.current, 
+        dims.cols, 
+        dims.rows
+      )
+    }
+  } catch {
+    // container might not be visible yet
+  }
+}, [])
+```
+
+## PTY Integration
+
+Blink uses node-pty to spawn real shell processes in the main process:
+
+```typescript
+// Spawn PTY in main process
+const shell = profile?.shell
+window.electronAPI.invoke('terminal:create', cwd, shell).then((id: string) => {
+  terminalIdRef.current = id
+
+  // Stream PTY output → xterm
+  const dataHandler = (_: Electron.IpcRendererEvent, termId: string, data: string) => {
+    if (termId === id) term.write(data)
+  }
+  
+  const exitHandler = (_: Electron.IpcRendererEvent, termId: string) => {
+    if (termId === id) term.write('\r\n\x1b[90m[process ended]\x1b[0m\r\n')
+  }
+
+  window.electronAPI.on('terminal:data', dataHandler)
+  window.electronAPI.on('terminal:exit', exitHandler)
+
+  // Stream key input → PTY
+  term.onData((data) => {
+    window.electronAPI.send('terminal:input', id, data)
+  })
+})
+```
+
+<Accordion title="IPC Events">
+  - **terminal:create** - Spawn a new PTY process
+  - **terminal:data** - Stream output from PTY to terminal
+  - **terminal:input** - Send keyboard input to PTY
+  - **terminal:resize** - Update PTY dimensions
+  - **terminal:exit** - Handle process termination
+  - **terminal:kill** - Terminate PTY process
+</Accordion>
+
+## Shell Support
+
+Blink supports multiple shell configurations:
+
+```typescript
+interface TerminalProfile {
+  shell?: string
+}
+
+// Examples:
+// - PowerShell: 'powershell.exe' or 'pwsh.exe'
+// - Bash: 'bash' or 'bash.exe'
+// - CMD: 'cmd.exe'
+// - Zsh: 'zsh'
+```
+
+<Tabs>
+  <Tab title="Windows">
+    - **PowerShell** (default): Modern Windows shell
+    - **PowerShell Core**: Cross-platform PowerShell
+    - **CMD**: Classic Windows command prompt
+    - **Git Bash**: Bash emulation on Windows
+  </Tab>
+  
+  <Tab title="Linux">
+    - **Bash** (default): Standard Linux shell
+    - **Zsh**: Advanced shell with plugins
+    - **Fish**: User-friendly shell
+    - **Sh**: POSIX shell
+  </Tab>
+  
+  <Tab title="macOS">
+    - **Zsh** (default): macOS default shell
+    - **Bash**: Classic Unix shell
+    - **Fish**: Modern shell alternative
+  </Tab>
+</Tabs>
+
+## Current Directory
+
+The terminal automatically opens in your workspace directory:
+
+```typescript
+<TerminalPanel 
+  cwd={currentWorkspaceDirectory}
+  profile={terminalProfile}
+/>
+```
+
+<Tip>
+When you open a folder in Blink, the terminal automatically changes to that directory, making it easy to run commands in your project.
+</Tip>
+
+## Terminal Controls
+
+### Opening the Terminal
+
+Press `Ctrl + \`` to toggle the terminal panel visibility.
+
+### Resizing the Panel
+
+Drag the top edge of the terminal panel to adjust its height. The terminal automatically reflows to fit the new size.
+
+### Scrollback Buffer
+
+The terminal maintains 5000 lines of scrollback history:
+
+```typescript
+scrollback: 5000
+```
+
+Scroll with:
+- Mouse wheel
+- Scrollbar
+- Shift + PageUp/PageDown
+
+## Input Handling
+
+All keyboard input is streamed to the PTY process:
+
+```typescript
+term.onData((data) => {
+  window.electronAPI.send('terminal:input', id, data)
+})
+```
+
+Supported inputs:
+- Standard text input
+- Special keys (arrows, home, end, etc.)
+- Keyboard shortcuts (Ctrl+C, Ctrl+Z, etc.)
+- Mouse selection and copy/paste
+
+## Output Streaming
+
+Terminal output is streamed from the PTY with minimal latency:
+
+```typescript
+const dataHandler = (
+  _: Electron.IpcRendererEvent, 
+  termId: string, 
+  data: string
+) => {
+  if (termId === id) term.write(data)
+}
+
+window.electronAPI.on('terminal:data', dataHandler)
+```
+
+<Note>
+The terminal uses a streaming architecture for instant output display with no buffering delay.
+</Note>
+
+## Process Termination
+
+When a process exits, the terminal displays a message:
+
+```typescript
+const exitHandler = (
+  _: Electron.IpcRendererEvent, 
+  termId: string
+) => {
+  if (termId === id) {
+    term.write('\r\n\x1b[90m[process ended]\x1b[0m\r\n')
+  }
+}
+```
+
+## Cleanup & Disposal
+
+The terminal properly cleans up resources on unmount:
+
+```typescript
+return () => {
+  ro.disconnect()
+  // Kill PTY
+  if (terminalIdRef.current) {
+    window.electronAPI.send('terminal:kill', terminalIdRef.current)
+  }
+  term.dispose()
+  termRef.current = null
+  fitAddonRef.current = null
+  terminalIdRef.current = null
+}
+```
+
+## Performance Features
+
+The terminal is optimized for performance:
+
+- **Low latency**: Direct IPC communication with minimal overhead
+- **Efficient rendering**: xterm.js uses canvas for fast rendering
+- **Smart resizing**: Only resizes when panel dimensions change
+- **Proper cleanup**: All resources are disposed correctly
+
+## Font Configuration
+
+The terminal uses monospace fonts optimized for code:
+
+```typescript
+fontFamily: '"JetBrainsMono","Geist Mono", monospace'
+fontSize: 13
+fontWeight: '500'
+letterSpacing: 1
+```
+
+<Tip>
+JetBrains Mono is used as the primary font for excellent readability and ligature support.
+</Tip>
+
+## Common Commands
+
+### Running Build Scripts
+
+```bash
+npm run build
+yarn build
+```
+
+### Starting Development Servers
+
+```bash
+npm run dev
+yarn start
+```
+
+### Git Operations
+
+```bash
+git status
+git add .
+git commit -m "message"
+git push
+```
+
+### File Operations
+
+```bash
+ls -la
+cd directory
+mkdir newfolder
+rm file.txt
+```
+
+## Terminal Panel Integration
+
+The terminal is integrated alongside the problems panel:
+
+- Toggle between terminal and problems view
+- Resizable panel height
+- Preserved state across sessions
+
+## Next Steps
+
+- Learn about the [Monaco Editor](/features/editor)
+- Manage files with the [File Explorer](/features/file-explorer)
+- Customize appearance in [Settings](/features/settings)

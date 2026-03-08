@@ -1,0 +1,201 @@
+---
+title: 'Roadmap'
+description: 'Explore what has been built, what is in progress, and what is coming next for Blink Code Editor'
+icon: 'map'
+---
+
+## Project Vision
+
+Blink Code Editor is a high-performance IDE built from the ground up to ensure every millisecond of latency is eliminated. As a standalone development environment (not a VS Code fork), we focus on lightweight footprint and instantaneous feedback.
+
+## Development Status
+
+<CardGroup cols={3}>
+  <Card title="Completed" icon="check" color="#10b981">
+    Core editor functionality, file explorer, terminal, settings, and more
+  </Card>
+  <Card title="In Progress" icon="spinner" color="#f59e0b">
+    Custom theme engine and LSP integration
+  </Card>
+  <Card title="Planned" icon="lightbulb" color="#3b82f6">
+    Search, multi-cursor, plugins, Git, and cloud sync
+  </Card>
+</CardGroup>
+
+---
+
+## Completed Features
+
+These features are fully implemented and available in current stable releases:
+
+<AccordionGroup>
+  <Accordion title="Core Editor" icon="code">
+    - File editing and saving (CTRL + S)
+    - Image file preview support
+    - Link clicking (beta feature)
+    - Creating new files and folders via shortcuts:
+      - CTRL + N for new file
+      - CTRL + SHIFT + N for new folder
+    - Last session directory history
+  </Accordion>
+
+  <Accordion title="File Explorer" icon="folder-tree">
+    - Tree view with file/folder hierarchy
+    - File extension icons
+    - Keyboard shortcuts for navigation
+    - Open files directly in the editor
+    - Resizable panel
+    - Context menu with right-click options:
+      - Copy/Paste/Cut
+      - Rename
+      - Remove
+    - Drag and drop system for files and folders
+  </Accordion>
+
+  <Accordion title="User Interface" icon="window">
+    - Draggable and resizable window
+    - Basic navbar buttons
+    - Glassmorphism UI inspired by modern editors
+    - Changelog modal in bottom-right corner
+    - Version-aware display persistence
+    - Auto-update system (press ALT key to display navbar with update button)
+  </Accordion>
+
+  <Accordion title="Developer Tools" icon="terminal">
+    - Error and warning panel with resizable height
+    - Detailed error/warning display in bottom panel
+    - Built-in Terminal next to problems panel (CTRL + `)
+    - Auto current directory in Terminal
+  </Accordion>
+
+  <Accordion title="Customization" icon="sliders">
+    - Settings panel accessible via navbar "Edit" link
+    - Font customization
+    - Editor settings
+    - Cursor customization
+    - Minimap options
+  </Accordion>
+
+  <Accordion title="Analytics & Updates" icon="chart-line">
+    - Aptabase Analytics integration for tracking user interactions
+    - Auto-update functionality built-in
+    - Version management system
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Work in Progress
+
+These features are currently under active development:
+
+<CardGroup cols={2}>
+  <Card title="Custom Theme Engine" icon="palette" color="#f59e0b">
+    Building a robust theme system that allows users to customize the entire editor appearance while maintaining performance. This will support:
+    - Color scheme customization
+    - Syntax highlighting themes
+    - UI element theming
+    - Theme import/export
+  </Card>
+
+  <Card title="LSP Integration" icon="microchip" color="#f59e0b">
+    Implementing Language Server Protocol support to provide:
+    - Intelligent code completion
+    - Go-to-definition
+    - Find references
+    - Code diagnostics
+    - Hover information
+    - Signature help
+    
+    <Note>
+    LSP integration is critical for making Blink a fully-featured IDE while maintaining our performance-first philosophy.
+    </Note>
+  </Card>
+</CardGroup>
+
+---
+
+## Future Goals
+
+These features are planned for future releases:
+
+<AccordionGroup>
+  <Accordion title="Global Search and Indexing" icon="magnifying-glass">
+    Implement lightning-fast search across entire projects:
+    - Full-text search with regex support
+    - Intelligent file indexing
+    - Search in files with preview
+    - Replace in multiple files
+    - Performance-optimized for large codebases
+    
+    **Priority**: High
+  </Accordion>
+
+  <Accordion title="Multi-cursor Support" icon="arrows-split-up-and-left">
+    Enable multiple cursors for simultaneous editing:
+    - Add cursor above/below
+    - Select all occurrences
+    - Column selection mode
+    - Individual cursor manipulation
+    
+    **Priority**: High
+  </Accordion>
+
+  <Accordion title="Plugin API for Community Extensions" icon="puzzle-piece">
+    Create a powerful extension system:
+    - Plugin SDK and documentation
+    - Extension marketplace
+    - Language support plugins
+    - Theme plugins
+    - Tool integrations
+    - Sandboxed execution for security
+    
+    **Priority**: Medium
+    
+    <Note>
+    This will enable the community to extend Blink's capabilities while we maintain the core performance.
+    </Note>
+  </Accordion>
+
+  <Accordion title="Built-in Git Interface" icon="code-branch">
+    Integrate Git functionality directly into the editor:
+    - Visual diff viewer
+    - Commit history
+    - Branch management
+    - Merge conflict resolution
+    - Git blame integration
+    - Stage/unstage changes
+    
+    **Priority**: Medium
+  </Accordion>
+
+  <Accordion title="Cloud Synchronization for Settings" icon="cloud">
+    Sync your preferences across devices:
+    - Settings synchronization
+    - Theme sync
+    - Keyboard shortcuts sync
+    - Extension settings
+    - Encrypted cloud storage
+    
+    **Priority**: Low
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Release Philosophy
+
+<Note>
+We prioritize stability and performance over rapid feature releases. Each feature goes through rigorous testing to ensure it meets our "every millisecond matters" philosophy.
+</Note>
+
+### Our Approach
+
+- **Performance First**: Every feature is evaluated for its performance impact
+- **Stability Focus**: Features move from development to stable only when thoroughly tested
+- **Community Driven**: User feedback shapes our roadmap priorities
+- **Incremental Improvements**: Regular updates with meaningful enhancements
+
+### Get Involved
+
+Want to help shape the future of Blink Code Editor? Check out our [Contributing Guide](/developer/contributing) to get started. We especially welcome contributions in areas currently under development or planned for future releases.

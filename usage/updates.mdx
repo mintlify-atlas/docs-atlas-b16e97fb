@@ -1,0 +1,189 @@
+---
+title: 'Updates'
+description: 'Keep Blink Code Editor up-to-date with automatic updates and manual update checks'
+icon: 'arrow-up-from-bracket'
+---
+
+Blink Code Editor includes a built-in auto-updater powered by `electron-updater` to keep your editor current with the latest features, bug fixes, and improvements.
+
+## Auto-Update System
+
+Blink automatically checks for updates and downloads them in the background. The auto-updater is configured with these settings:
+
+- **Auto Download:** Enabled - Updates download automatically when available
+- **Auto Install on Quit:** Enabled - Updates install when you close the editor
+- **Update Channel:** Stable releases from the official repository
+
+<Note>
+Updates are downloaded in the background without interrupting your work. You'll be notified when an update is ready to install.
+</Note>
+
+## Checking for Updates Manually
+
+To manually check for updates:
+
+1. Press the `ALT` key to reveal the navbar menu
+2. Click on **Edit** in the menu
+3. Click **Check for updates**
+
+The update button will show the current status:
+
+- **Check for updates** - Ready to check
+- **Checking for updates...** - Currently checking
+- **Downloading... X%** - Download in progress with percentage
+- **Update downloaded! You can install it now.** - Ready to install
+- **No updates found** - You're on the latest version
+- **Error: [message]** - If an error occurred
+
+<Tip>
+You can check for updates at any time without disrupting your work. The editor continues to function normally during the update check and download.
+</Tip>
+
+## Installing Updates
+
+When an update is downloaded and ready:
+
+1. Press the `ALT` key to show the navbar menu
+2. Click on **Edit**
+3. Click **Install and restart app**
+
+The editor will close, install the update, and reopen automatically.
+
+<Note>
+Make sure to save all your work before installing an update. Open files and your workspace will be restored after the restart.
+</Note>
+
+## Update Process
+
+Here's what happens during the update process:
+
+<Accordion title="1. Update Check">
+When you click "Check for updates" or the editor checks automatically, Blink connects to the update server to see if a newer version is available.
+</Accordion>
+
+<Accordion title="2. Update Available">
+If a new version is found, the editor displays "Update available! Downloading..." and begins downloading the update package in the background.
+</Accordion>
+
+<Accordion title="3. Download Progress">
+As the update downloads, you'll see a progress indicator showing the percentage completed (e.g., "Downloading... 45%"). You can continue working normally during this time.
+</Accordion>
+
+<Accordion title="4. Update Downloaded">
+Once the download completes, the message changes to "Update downloaded! You can install it now." and the button becomes "Install and restart app".
+</Accordion>
+
+<Accordion title="5. Installation">
+Clicking "Install and restart app" closes the editor, applies the update, and relaunches Blink with the new version.
+</Accordion>
+
+## Auto-Install on Quit
+
+Blink is configured to automatically install downloaded updates when you close the editor. This means:
+
+- If an update is downloaded and you close Blink normally, it will install on quit
+- Next time you open Blink, you'll be running the latest version
+- No additional action is required
+
+<Tip>
+This "install on quit" feature ensures you're always running the latest stable version without manual intervention.
+</Tip>
+
+## Update States and Messages
+
+Here's a complete reference of update states:
+
+| Message | Meaning | Action |
+| --- | --- | --- |
+| Check for updates | Ready to check | Click to check for updates |
+| Checking for updates... | Checking in progress | Wait for response |
+| Update available! Downloading... | Update found, downloading | Continue working |
+| Downloading... X% | Download progress | Monitor progress |
+| Update downloaded! You can install it now. | Ready to install | Click to install and restart |
+| No updates found | You're up-to-date | No action needed |
+| Error: [message] | Update error occurred | Try again or check logs |
+
+## Update Configuration
+
+Blink's auto-updater is configured in `electron/main.ts` with these settings:
+
+```typescript
+autoUpdater.autoDownload = true;
+autoUpdater.autoInstallOnAppQuit = true;
+```
+
+<Note>
+These settings ensure seamless updates with minimal user intervention while keeping you in control of when the editor restarts.
+</Note>
+
+## Version Information
+
+To check your current version:
+
+- Look at the changelog that appears when a new version is installed
+- Or check the project repository for the latest release information
+
+## Update Channels
+
+Blink currently uses a single stable update channel. All users receive the same stable releases. Development and beta channels may be introduced in future versions.
+
+## Troubleshooting Updates
+
+<Accordion title="Update Check Fails">
+If checking for updates fails:
+
+- Verify your internet connection
+- Check if a firewall is blocking the update server
+- Try again after a few minutes
+- The error message will provide details about what went wrong
+</Accordion>
+
+<Accordion title="Download Stalls or Fails">
+If the download doesn't complete:
+
+- Check your network connection
+- Try checking for updates again
+- The download will resume or restart automatically
+</Accordion>
+
+<Accordion title="Installation Issues">
+If the update doesn't install:
+
+- Make sure you have write permissions to the application directory
+- Close any other instances of Blink
+- Try running the installer manually from the downloads folder
+- Check the electron logs for detailed error information
+</Accordion>
+
+## Update Events
+
+For developers, Blink emits these update events internally:
+
+- `update_available` - New update found
+- `update_not_available` - No updates available
+- `update_progress` - Download progress percentage
+- `update_downloaded` - Update ready to install
+- `update_error` - Error occurred during update process
+
+<Tip>
+Blink's auto-updater uses the same proven technology as many popular Electron applications to ensure reliable, secure updates.
+</Tip>
+
+## Privacy and Security
+
+The update system:
+
+- Only connects to the official Blink update servers
+- Downloads updates over secure HTTPS connections
+- Verifies update signatures before installation
+- Does not collect personal information during update checks
+
+## Future Update Features
+
+Planned improvements to the update system:
+
+- Release notes displayed in-app before installing
+- Update scheduling (choose when to install)
+- Beta/development channel options
+- Rollback capability for problematic updates
+- Differential updates (smaller download sizes)
