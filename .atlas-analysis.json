@@ -1,0 +1,91 @@
+{
+  "projectType": "frontend",
+  "projectName": "Blink Code Editor",
+  "projectDescription": "A high-performance desktop code editor built for speed and efficiency with modern workflows.",
+  "theme": "aspen",
+  "primaryColor": "#3B82F6",
+  "lightColor": "#60A5FA",
+  "darkColor": "#1E40AF",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "installation",
+              "quickstart"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/overview",
+              "features/editor",
+              "features/file-explorer",
+              "features/terminal",
+              "features/settings"
+            ]
+          },
+          {
+            "group": "Usage",
+            "pages": [
+              "usage/keyboard-shortcuts",
+              "usage/customization",
+              "usage/updates"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Developer",
+        "groups": [
+          {
+            "group": "Development",
+            "pages": [
+              "developer/architecture",
+              "developer/components",
+              "developer/building"
+            ]
+          },
+          {
+            "group": "Contributing",
+            "pages": [
+              "developer/contributing",
+              "developer/roadmap",
+              "developer/changelog"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "High-performance Monaco editor integration",
+    "File explorer with tree view and context menu",
+    "Built-in terminal with multiple shell support",
+    "Customizable editor settings (fonts, themes, cursor)",
+    "Keyboard shortcuts for productivity",
+    "Auto-updates and version management",
+    "Image file preview support",
+    "Drag and drop file management",
+    "Error and warning panel",
+    "Glassmorphism UI design",
+    "Analytics integration",
+    "Session directory history"
+  ],
+  "publicApiSurface": [
+    "Editor component with Monaco integration",
+    "File Explorer tree view",
+    "Terminal panel with node-pty",
+    "Settings panel",
+    "IPC handlers for file operations",
+    "Window controls (minimize, maximize, close)",
+    "Auto-updater integration",
+    "Custom protocol handlers",
+    "Analytics tracking",
+    "Keyboard shortcuts system"
+  ]
+}
